@@ -128,6 +128,7 @@ func (m Manager) GetAllSupportedLinterConfigs() []*linter.Config {
 		gofumptCfg          *config.GofumptSettings
 		goheaderCfg         *config.GoHeaderSettings
 		goimportsCfg        *config.GoImportsSettings
+		goKeywordCfg        *config.GoKeywordSettings
 		golintCfg           *config.GoLintSettings
 		goMndCfg            *config.GoMndSettings
 		goModDirectivesCfg  *config.GoModDirectivesSettings
@@ -501,7 +502,7 @@ func (m Manager) GetAllSupportedLinterConfigs() []*linter.Config {
 			WithAutoFix().
 			WithURL("https://godoc.org/golang.org/x/tools/cmd/goimports"),
 
-		linter.NewConfig(golinters.NewGoKeyword()).
+		linter.NewConfig(golinters.NewGoKeyword(goKeywordCfg)).
 			WithSince("1.51.0").
 			WithLoadForGoAnalysis().
 			WithPresets(linter.PresetStyle).
