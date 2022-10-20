@@ -13,15 +13,16 @@ import (
 
 const (
 	goKeywordName        = "gokeyword"
-	goKeywordErrorMsg    = "detected use of `go` keyword"
+	goKeywordErrorMsg    = "detected use of `go` keyword: %s"
 	goKeywordDescription = "detects presence of the `go` keyword"
+	defaultDetails       = "no details provided"
 )
 
+var details = defaultDetails
+
 func NewGoKeyword(cfg *config.GoKeywordSettings) *goanalysis.Linter {
-
-	cfgMap := map[string]map[string]interface{}{}
-	if cfg != nil {
-
+	if cfg != nil && cfg.Details != "" {
+		details = cfg.Details
 	}
 
 	return goanalysis.NewLinter(
@@ -56,7 +57,7 @@ func run(pass *analysis.Pass) (interface{}, error) {
 			foundGo = true
 		}
 		if foundGo {
-			pass.Reportf(node.Pos(), goKeywordErrorMsg)
+			pass.Reportf(node.Pos(), goKeywordErrorMsg, details)
 		}
 	})
 	return nil, nil
