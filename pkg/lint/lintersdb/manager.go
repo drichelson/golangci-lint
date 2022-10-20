@@ -501,6 +501,12 @@ func (m Manager) GetAllSupportedLinterConfigs() []*linter.Config {
 			WithAutoFix().
 			WithURL("https://godoc.org/golang.org/x/tools/cmd/goimports"),
 
+		linter.NewConfig(golinters.NewGoKeyword()).
+			WithSince("1.51.0").
+			WithLoadForGoAnalysis().
+			WithPresets(linter.PresetStyle).
+			WithURL(""),
+
 		linter.NewConfig(golinters.NewGolint(golintCfg)).
 			WithSince("v1.0.0").
 			WithLoadForGoAnalysis().

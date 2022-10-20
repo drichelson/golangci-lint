@@ -655,6 +655,9 @@ linters-settings:
     # Default: ""
     local-prefixes: github.com/org/project
 
+  gokeyword:
+    details: put a url here
+
   golint:
     # Minimal confidence for issues.
     # Default: 0.8
