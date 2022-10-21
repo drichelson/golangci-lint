@@ -52,7 +52,7 @@ require (
 	github.com/jirfag/go-printf-func-name v0.0.0-20200119135958-7558a9eaa5af
 	github.com/julz/importas v0.1.0
 	github.com/kisielk/errcheck v1.6.2
-	github.com/kkHAIKE/contextcheck v1.1.2
+	github.com/kkHAIKE/contextcheck v1.1.3
 	github.com/kulti/thelper v0.6.3
 	github.com/kunwardeep/paralleltest v1.0.6
 	github.com/kyoh86/exportloopref v0.1.8
@@ -99,7 +99,7 @@ require (
 	github.com/timakin/bodyclose v0.0.0-20210704033933-f49887972144
 	github.com/timonwong/loggercheck v0.9.3
 	github.com/tomarrell/wrapcheck/v2 v2.7.0
-	github.com/tommy-muehle/go-mnd/v2 v2.5.0
+	github.com/tommy-muehle/go-mnd/v2 v2.5.1
 	github.com/ultraware/funlen v0.0.3
 	github.com/ultraware/whitespace v0.0.5
 	github.com/uudashr/gocognit v1.0.6
