@@ -1,6 +1,7 @@
 package golinters
 
 import (
+	"flag"
 	"go/ast"
 
 	"github.com/golangci/golangci-lint/pkg/config"
@@ -21,26 +22,47 @@ const (
 var details = defaultDetails
 
 func NewGoKeyword(cfg *config.GoKeywordSettings) *goanalysis.Linter {
+	cfgMap := map[string]map[string]interface{}{}
 	if cfg != nil && cfg.Details != "" {
-		details = cfg.Details
+		cfgMap[goKeywordName] = map[string]interface{}{"details": cfg.Details}
 	}
 
 	return goanalysis.NewLinter(
 		goKeywordName,
 		goKeywordDescription,
-		[]*analysis.Analyzer{goKeywordFinder},
-		nil,
+		[]*analysis.Analyzer{newGoKeywordAnalyzer()},
+		cfgMap,
 	).WithLoadMode(goanalysis.LoadModeTypesInfo)
 }
 
-var goKeywordFinder = &analysis.Analyzer{
-	Name:     goKeywordName,
-	Doc:      goKeywordDescription,
-	Run:      run,
-	Requires: []*analysis.Analyzer{inspect.Analyzer},
+func newGoKeywordAnalyzer() *analysis.Analyzer {
+	goKeywordAnalyzer := &goKeywordAnalyzer{Details: defaultDetails}
+
+	a := &analysis.Analyzer{
+		Name:     goKeywordName,
+		Doc:      goKeywordDescription,
+		Run:      goKeywordAnalyzer.run,
+		Requires: []*analysis.Analyzer{inspect.Analyzer},
+	}
+	a.Flags.Init(goKeywordName, flag.ExitOnError)
+	a.Flags.Var(goKeywordAnalyzer, "details", "Documentation on why this linter is enabled")
+	return a
 }
 
-func run(pass *analysis.Pass) (interface{}, error) {
+type goKeywordAnalyzer struct {
+	Details string
+}
+
+func (a *goKeywordAnalyzer) String() string {
+	return a.Details
+}
+
+func (a *goKeywordAnalyzer) Set(details string) error {
+	a.Details = details
+	return nil
+}
+
+func (a *goKeywordAnalyzer) run(pass *analysis.Pass) (interface{}, error) {
 	i, ok := pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
 	if !ok {
 		return nil, errors.New("analyzer is not type *inspector.Inspector")
@@ -57,7 +79,7 @@ func run(pass *analysis.Pass) (interface{}, error) {
 			foundGo = true
 		}
 		if foundGo {
-			pass.Reportf(node.Pos(), goKeywordErrorMsg, details)
+			pass.Reportf(node.Pos(), goKeywordErrorMsg+": "+details)
 		}
 	})
 	return nil, nil
