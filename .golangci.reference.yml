@@ -1996,6 +1996,7 @@ linters:
     - gofumpt
     - goheader
     - goimports
+    - gokeyword
     - golint
     - gomnd
     - gomoddirectives
@@ -2103,6 +2104,7 @@ linters:
     - gofumpt
     - goheader
     - goimports
+    - gokeyword
     - golint
     - gomnd
     - gomoddirectives

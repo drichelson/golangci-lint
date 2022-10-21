@@ -205,6 +205,7 @@ func (m Manager) GetAllSupportedLinterConfigs() []*linter.Config {
 		gofumptCfg = &m.cfg.LintersSettings.Gofumpt
 		goheaderCfg = &m.cfg.LintersSettings.Goheader
 		goimportsCfg = &m.cfg.LintersSettings.Goimports
+		goKeywordCfg = &m.cfg.LintersSettings.GoKeyword
 		golintCfg = &m.cfg.LintersSettings.Golint
 		goMndCfg = &m.cfg.LintersSettings.Gomnd
 		goModDirectivesCfg = &m.cfg.LintersSettings.GoModDirectives
