@@ -17,18 +17,21 @@ const (
 	goKeywordErrorMsg    = "detected use of `go` keyword: %s"
 	goKeywordDescription = "detects presence of the `go` keyword"
 	defaultDetails       = "no details provided"
+	detailsFlag          = "details"
 )
 
 func NewGoKeyword(cfg *config.GoKeywordSettings) *goanalysis.Linter {
+	a := newGoKeywordAnalyzer()
+
 	cfgMap := map[string]map[string]interface{}{}
 	if cfg != nil && cfg.Details != "" {
-		cfgMap[goKeywordName] = map[string]interface{}{"details": cfg.Details}
+		cfgMap[a.Name] = map[string]interface{}{detailsFlag: cfg.Details}
 	}
 
 	return goanalysis.NewLinter(
-		goKeywordName,
+		a.Name,
 		goKeywordDescription,
-		[]*analysis.Analyzer{newGoKeywordAnalyzer()},
+		[]*analysis.Analyzer{a},
 		cfgMap,
 	).WithLoadMode(goanalysis.LoadModeTypesInfo)
 }
@@ -43,7 +46,7 @@ func newGoKeywordAnalyzer() *analysis.Analyzer {
 		Requires: []*analysis.Analyzer{inspect.Analyzer},
 	}
 	a.Flags.Init(goKeywordName, flag.ExitOnError)
-	a.Flags.Var(goKeywordAnalyzer, "details", "Documentation on why this linter is enabled")
+	a.Flags.Var(goKeywordAnalyzer, detailsFlag, "Documentation on why this linter is enabled")
 	return a
 }
 
