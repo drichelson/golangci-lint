@@ -19,8 +19,6 @@ const (
 	defaultDetails       = "no details provided"
 )
 
-var details = defaultDetails
-
 func NewGoKeyword(cfg *config.GoKeywordSettings) *goanalysis.Linter {
 	cfgMap := map[string]map[string]interface{}{}
 	if cfg != nil && cfg.Details != "" {
@@ -36,7 +34,7 @@ func NewGoKeyword(cfg *config.GoKeywordSettings) *goanalysis.Linter {
 }
 
 func newGoKeywordAnalyzer() *analysis.Analyzer {
-	goKeywordAnalyzer := &goKeywordAnalyzer{Details: defaultDetails}
+	goKeywordAnalyzer := &goKeywordAnalyzer{details: defaultDetails}
 
 	a := &analysis.Analyzer{
 		Name:     goKeywordName,
@@ -50,15 +48,15 @@ func newGoKeywordAnalyzer() *analysis.Analyzer {
 }
 
 type goKeywordAnalyzer struct {
-	Details string
+	details string
 }
 
 func (a *goKeywordAnalyzer) String() string {
-	return a.Details
+	return a.details
 }
 
 func (a *goKeywordAnalyzer) Set(details string) error {
-	a.Details = details
+	a.details = details
 	return nil
 }
 
@@ -79,7 +77,7 @@ func (a *goKeywordAnalyzer) run(pass *analysis.Pass) (interface{}, error) {
 			foundGo = true
 		}
 		if foundGo {
-			pass.Reportf(node.Pos(), goKeywordErrorMsg+": "+details)
+			pass.Reportf(node.Pos(), goKeywordErrorMsg+": "+a.details)
 		}
 	})
 	return nil, nil
