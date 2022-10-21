@@ -20,8 +20,6 @@ const (
 )
 
 func NewGoKeyword(cfg *config.GoKeywordSettings) *goanalysis.Linter {
-	panic(cfg.Details)
-
 	gka := newGoKeywordAnalyzer()
 
 	var cfgMap map[string]map[string]interface{}
