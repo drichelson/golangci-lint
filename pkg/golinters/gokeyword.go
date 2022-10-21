@@ -77,7 +77,7 @@ func (a *goKeywordAnalyzer) run(pass *analysis.Pass) (interface{}, error) {
 			foundGo = true
 		}
 		if foundGo {
-			pass.Reportf(node.Pos(), goKeywordErrorMsg+": "+a.details)
+			pass.Reportf(node.Pos(), goKeywordErrorMsg, a.details)
 		}
 	})
 	return nil, nil
