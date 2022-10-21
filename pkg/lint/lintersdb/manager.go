@@ -506,7 +506,7 @@ func (m Manager) GetAllSupportedLinterConfigs() []*linter.Config {
 			WithSince("1.51.0").
 			WithLoadForGoAnalysis().
 			WithPresets(linter.PresetStyle).
-			WithURL(""),
+			WithURL("https://www.google.com"),
 
 		linter.NewConfig(golinters.NewGolint(golintCfg)).
 			WithSince("v1.0.0").

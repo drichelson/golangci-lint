@@ -1,7 +1,6 @@
 package golinters
 
 import (
-	"flag"
 	"go/ast"
 
 	"github.com/golangci/golangci-lint/pkg/config"
@@ -21,49 +20,62 @@ const (
 )
 
 func NewGoKeyword(cfg *config.GoKeywordSettings) *goanalysis.Linter {
-	a := newGoKeywordAnalyzer()
+	gka := newGoKeywordAnalyzer()
 
-	cfgMap := map[string]map[string]interface{}{}
+	var cfgMap map[string]map[string]interface{}
 	if cfg != nil && cfg.Details != "" {
-		cfgMap[a.Name] = map[string]interface{}{detailsFlag: cfg.Details}
+		cfgMap = map[string]map[string]interface{}{
+			gka.analyzer.Name: {
+				detailsFlag: cfg.Details,
+			},
+		}
 	}
 
 	return goanalysis.NewLinter(
-		a.Name,
+		gka.analyzer.Name,
 		goKeywordDescription,
-		[]*analysis.Analyzer{a},
+		[]*analysis.Analyzer{gka.analyzer},
 		cfgMap,
 	).WithLoadMode(goanalysis.LoadModeTypesInfo)
 }
 
-func newGoKeywordAnalyzer() *analysis.Analyzer {
-	goKeywordAnalyzer := &goKeywordAnalyzer{details: defaultDetails}
-
-	a := &analysis.Analyzer{
+func newGoKeywordAnalyzer() *goKeywordAnalyzer {
+	gka := goKeywordAnalyzer{
+		//details: details,
+	}
+	gka.analyzer = &analysis.Analyzer{
 		Name:     goKeywordName,
 		Doc:      goKeywordDescription,
-		Run:      goKeywordAnalyzer.run,
+		Run:      run,
 		Requires: []*analysis.Analyzer{inspect.Analyzer},
 	}
-	a.Flags.Init(goKeywordName, flag.ExitOnError)
-	a.Flags.Var(goKeywordAnalyzer, detailsFlag, "Documentation on why this linter is enabled")
-	return a
+
+	//a :=
+	//a.Flags.Init(goKeywordName, flag.ExitOnError)
+	//a.Flags.Var(goKeywordAnalyzer, detailsFlag, "Documentation on why this linter is enabled")
+	//return a
+	gka.analyzer.Flags.String(detailsFlag, defaultDetails, "Documentation on why this linter is enabled")
+
+	return &gka
 }
 
 type goKeywordAnalyzer struct {
-	details string
+	//details  string
+	analyzer *analysis.Analyzer
 }
 
-func (a *goKeywordAnalyzer) String() string {
-	return a.details
-}
+//func (a *goKeywordAnalyzer) String() string {
+//	return a.details
+//}
+//
+//func (a *goKeywordAnalyzer) Set(details string) error {
+//	fmt.Println("Setting details to: ", details)
+//	a.details = details
+//	return nil
+//}
 
-func (a *goKeywordAnalyzer) Set(details string) error {
-	a.details = details
-	return nil
-}
-
-func (a *goKeywordAnalyzer) run(pass *analysis.Pass) (interface{}, error) {
+func run(pass *analysis.Pass) (interface{}, error) {
+	details := pass.Analyzer.Flags.Lookup(detailsFlag).Value.String()
 	i, ok := pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
 	if !ok {
 		return nil, errors.New("analyzer is not type *inspector.Inspector")
@@ -80,7 +92,7 @@ func (a *goKeywordAnalyzer) run(pass *analysis.Pass) (interface{}, error) {
 			foundGo = true
 		}
 		if foundGo {
-			pass.Reportf(node.Pos(), goKeywordErrorMsg, a.details)
+			pass.Reportf(node.Pos(), goKeywordErrorMsg, details)
 		}
 	})
 	return nil, nil
