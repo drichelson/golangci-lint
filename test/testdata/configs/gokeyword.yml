@@ -1,4 +1,4 @@
 linters-settings:
   gokeyword:
-    details: deeeets
+    details: via test/testdata/configs/gokeyword.yml
 

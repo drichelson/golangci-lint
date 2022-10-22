@@ -3,5 +3,5 @@
 package testdata
 
 func GoKeyword() {
-	go func() {}() // want `detected direct use of `go` keyword: derp`
+	go func() {}() // want "detected use of go keyword: via test/testdata/configs/gokeyword.yml"
 }
