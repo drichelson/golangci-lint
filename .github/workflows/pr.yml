@@ -6,7 +6,7 @@ on:
   pull_request:
 
 env:
-  GO_VERSION: 1.19
+  GO_VERSION: '1.20'
 
 jobs:
   # Check if there is any dirty change for go mod tidy
@@ -43,7 +43,7 @@ jobs:
           # - 1.18rc1 -> 1.18.0-rc.1
           go-version: ${{ env.GO_VERSION }}
       - name: lint
-        uses: golangci/golangci-lint-action@v3.3.1
+        uses: golangci/golangci-lint-action@v3.4.0
         with:
           version: latest
           # skip cache because of flaky behaviors
@@ -88,8 +88,8 @@ jobs:
     strategy:
       matrix:
         golang:
-          - 1.18
           - 1.19
+          - '1.20'
     steps:
       - uses: actions/checkout@v3
       - name: Install Go

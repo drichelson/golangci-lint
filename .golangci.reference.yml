@@ -80,7 +80,7 @@ output:
   # Multiple can be specified by separating them by comma, output can be provided
   # for each of them by separating format name and path by colon symbol.
   # Output path can be either `stdout`, `stderr` or path to the file to write to.
-  # Example: "checkstyle:report.json,colored-line-number"
+  # Example: "checkstyle:report.xml,json:stdout,colored-line-number"
   #
   # Default: colored-line-number
   format: json
@@ -402,8 +402,21 @@ linters-settings:
     # Default: false
     custom-order: true
 
+  ginkgolinter:
+    # Suppress the wrong length assertion warning.
+    # Default: false
+    suppress-len-assertion: true
+
+    # Suppress the wrong nil assertion warning.
+    # Default: false
+    suppress-nil-assertion: true
+
+    # Suppress the wrong error assertion warning.
+    # Default: false
+    suppress-err-assertion: true
+
   gocognit:
-    # Minimal code complexity to report
+    # Minimal code complexity to report.
     # Default: 30 (but we recommend 10-20)
     min-complexity: 10
 
@@ -654,8 +667,8 @@ linters-settings:
     template-path: /path/to/my/template.tmpl
 
   goimports:
-    # Put imports beginning with prefix after 3rd-party packages.
-    # It's a comma-separated list of prefixes.
+    # A comma-separated list of prefixes, which, if set, checks import paths
+    # with the given prefixes are grouped after 3rd-party packages.
     # Default: ""
     local-prefixes: github.com/org/project
 
@@ -1202,6 +1215,17 @@ linters-settings:
     ignore-words:
       - someword
 
+  musttag:
+    # A set of custom functions to check in addition to the builtin ones.
+    # Default: json, xml, gopkg.in/yaml.v3, BurntSushi/toml, mitchellh/mapstructure
+    functions:
+        # The full name of the function, including the package.
+      - name: github.com/jmoiron/sqlx.Get
+        # The struct tag whose presence should be ensured.
+        tag: db
+        # The position of the argument to check.
+        arg-pos: 1
+
   nakedret:
     # Make an issue if func has more lines of code than this setting, and it has naked returns.
     # Default: 30
@@ -1368,6 +1392,13 @@ linters-settings:
         severity: warning
         disabled: false
         arguments: [ 7 ]
+      # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#comment-spacings
+      - name: comment-spacings
+        severity: warning
+        disabled: false
+        arguments:
+          - mypragma
+          - otherpragma
       # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md#confusing-naming
       - name: confusing-naming
         severity: warning
@@ -1677,16 +1708,16 @@ linters-settings:
     http-status-code-whitelist: [ "200", "400", "404", "500" ]
 
   tagliatelle:
-    # Check the struck tag name case.
+    # Check the struct tag name case.
     case:
       # Use the struct field name to check the name of the struct tag.
       # Default: false
       use-field-name: true
-      # `camel` is used for `json` and `yaml` (can be overridden)
+      # `camel` is used for `json` and `yaml`, and `header` is used for `header` (can be overridden)
       # Default: {}
       rules:
         # Any struct tag type can be used.
-        # Support string case: `camel`, `pascal`, `kebab`, `snake`, `goCamel`, `goPascal`, `goKebab`, `goSnake`, `upper`, `lower`
+        # Support string case: `camel`, `pascal`, `kebab`, `snake`, `goCamel`, `goPascal`, `goKebab`, `goSnake`, `upper`, `lower`, `header`
         json: camel
         yaml: camel
         xml: camel
@@ -1934,15 +1965,15 @@ linters-settings:
     
     # Causes an error when an If statement that checks an error variable doesn't
     # cuddle with the assignment of that variable.
-    enforce-err-cuddling: false
+    force-err-cuddling: false
     
-    # When enforce-err-cuddling is enabled this is a list of names
+    # When force-err-cuddling is enabled this is a list of names
     # used for error variables to check for in the conditional.
     error-variable-names: [ "err" ]
     
     # Causes an error if a short declaration (:=) cuddles with anything other than
     # another short declaration.
-    # This logic overrides enforce-err-cuddling among others.
+    # This logic overrides force-err-cuddling among others.
     force-short-decl-cuddling: false
 
   # The custom section can be used to define linter plugins to be loaded at runtime.
@@ -1995,6 +2026,8 @@ linters:
     - forcetypeassert
     - funlen
     - gci
+    - ginkgolinter
+    - gocheckcompilerdirectives
     - gochecknoglobals
     - gochecknoinits
     - gocognit
@@ -2030,6 +2063,7 @@ linters:
     - makezero
     - maligned
     - misspell
+    - musttag
     - nakedret
     - nestif
     - nilerr
@@ -2103,6 +2137,8 @@ linters:
     - forcetypeassert
     - funlen
     - gci
+    - ginkgolinter
+    - gocheckcompilerdirectives
     - gochecknoglobals
     - gochecknoinits
     - gocognit
@@ -2138,6 +2174,7 @@ linters:
     - makezero
     - maligned
     - misspell
+    - musttag
     - nakedret
     - nestif
     - nilerr
